@@ -2,6 +2,9 @@ from facenet_pytorch import MTCNN
 import cv2
 from PIL import Image
 
+import numpy as np
+
+
 from os import listdir, makedirs
 import glob
 from os.path import join, exists
@@ -28,9 +31,9 @@ mtcnn = MTCNN(
 # device='cuda:0', image_size=256)
 
 # Directory containing images respective to each video
-source_frames_folders = ["../train_frames/0/"]
+source_frames_folders = ["./datasets/train_frames/datasets/"]
 # Destination location where faces cropped out from images will be saved
-dest_faces_folder = "../train_face/0/"
+dest_faces_folder = "./datasets/train_face/0/"
 
 
 for i in source_frames_folders:
@@ -49,8 +52,8 @@ for i in source_frames_folders:
 
             try:
                 imsave(
-                    join(dest_faces_folder, j, k.split("/")[-1]),
-                    face.permute(1, 2, 0).int().numpy(),
+                    join(dest_faces_folder, j, k.split("\\")[-1]),
+                    face.permute(1, 2, 0).int().numpy().astype(np.uint8),
                 )
             except AttributeError:
                 print("Image skipping")

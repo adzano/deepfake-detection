@@ -4,12 +4,12 @@ from os.path import isfile, join
 from os import rename, listdir, rename, makedirs
 from shutil import copyfile
 
-source_folder_1 = './original_seq/youtube/'
-source_folder_2 = './manipulated_seq/NeuralTexture/'
-dest_folder_1 = './train/1'
-dest_folder_2 = './train/0'
-dest_folder_3 = './test/1'
-dest_folder_4 = './test/0'
+source_folder_1 = './datasets/original_sequences/youtube/c23/videos'
+source_folder_2 = './datasets/manipulated_sequences/NeuralTextures/c23/videos'
+dest_folder_1 = './datasets/train/1'
+dest_folder_2 = './datasets/train/0'
+dest_folder_3 = './datasets/test/1'
+dest_folder_4 = './datasets/test/0'
 
 
 for i, j in zip(listdir(source_folder_1)[:100], listdir(source_folder_2)[:100]):
