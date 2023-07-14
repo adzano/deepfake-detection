@@ -31,10 +31,11 @@ mtcnn = MTCNN(
 # device='cuda:0', image_size=256)
 
 # Directory containing images respective to each video
-source_frames_folders = ["./datasets/train_frames/datasets/"]
+source_frames_folders = ["./datasets/train_frames1/"]
 # Destination location where faces cropped out from images will be saved
 dest_faces_folder = "./datasets/train_face/0/"
 
+num_videos = 0
 
 for i in source_frames_folders:
     counter = 0
@@ -56,5 +57,8 @@ for i in source_frames_folders:
                     face.permute(1, 2, 0).int().numpy().astype(np.uint8),
                 )
             except AttributeError:
-                print("Image skipping")
+                print(f"Error Occurred. Image skipping at count: {counter}")
         counter += 1
+        num_videos += 1
+
+print(f"All face from frames extracted successcully. Total Face(from Folder) extracted: {num_videos} and it's stored at {dest_faces_folder}")

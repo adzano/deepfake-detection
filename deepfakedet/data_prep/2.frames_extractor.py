@@ -1,43 +1,55 @@
 import cv2
-from os import makedirs
-from os.path import join, exists
-import glob
+import os
 
-training_videos_folder = ["./datasets/train/0", "./datasets/train/1"]
+def extract_frames(video_path, output_folder, num_frames):
+    # Open the video file
+    video = cv2.VideoCapture(video_path)
 
-for folder in training_videos_folder:
-    videos_path = glob.glob(join(folder, "*.mp4"))
-    folder = folder.split("/")[1]
+    # Create the output folder if it doesn't exist
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
 
-    counter = 0
-    for video_path in videos_path:
-        cap = cv2.VideoCapture(video_path)
-        vid = video_path.split("/")[-1]
-        vid = vid.split(".")[0]
-        frameRate = cap.get(5)  # frame rate
+    # Get the total number of frames in the video
+    total_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
 
-        if not exists("./datasets/train_frames/" + folder + "/video_" + str(int(counter))):
-            makedirs("./datasets/train_frames/" + folder + "/video_" + str(int(counter)))
+    # Calculate the indices of frames to extract
+    frame_indices = [int(x * total_frames / num_frames) for x in range(num_frames)]
 
-        while cap.isOpened():
-            frameId = cap.get(1)  # current frame number
-            ret, frame = cap.read()
-            if not ret:
-                break
+    # Start frame extraction
+    count = 0
+    success = True
+    while success:
+        success, frame = video.read()
 
-            filename = (
-                "./datasets/train_frames/"
-                + folder
-                + "/video_"
-                + str(int(counter))
-                + "/image_"
-                + str(int(frameId) + 1)
-                + ".jpg"
-            )
-            cv2.imwrite(filename, frame)
+        if count in frame_indices:
+            frame_path = os.path.join(output_folder, f"frame_{count}.jpg")
+            cv2.imwrite(frame_path, frame)
 
-        cap.release()
+        count += 1
 
-        if counter % 10 == 0:
-            print("Number of videos done:", counter)
-        counter += 1
+    # Release the video capture object
+    video.release()
+
+    # print(f"Frames from a video extracted successfully: {count-1}")
+
+def extract_frames_from_folder(folder_path, output_folder, num_frames):
+    # Iterate over all files in the folder
+    num_videos = 0
+    for file_name in os.listdir(folder_path):
+        if file_name.endswith(".mp4"):
+            video_path = os.path.join(folder_path, file_name)
+            video_name = os.path.splitext(file_name)[0]
+            video_output_folder = os.path.join(output_folder, video_name)
+            extract_frames(video_path, video_output_folder, num_frames)
+            if num_videos % 10 == 0:
+                print("Number of videos done: ", num_videos)
+            num_videos += 1
+
+    print(f"All Videos extracted successfully. Total videos extracted: {num_videos} and it's stored at: {output_folder}")
+
+# Variables Declaration
+folder_path = "./datasets/train/0/"
+output_folder = "./datasets/train_frames1/"
+num_frames = 5
+
+extract_frames_from_folder(folder_path, output_folder, num_frames)
