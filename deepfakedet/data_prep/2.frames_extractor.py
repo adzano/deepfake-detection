@@ -34,6 +34,7 @@ def extract_frames(video_path, output_folder, num_frames):
 
 def extract_frames_from_folder(folder_path, output_folder, num_frames):
     # Iterate over all files in the folder
+    print(f"Begin extracting frames from {folder_path}...")
     num_videos = 0
     for file_name in os.listdir(folder_path):
         if file_name.endswith(".mp4"):
@@ -48,8 +49,8 @@ def extract_frames_from_folder(folder_path, output_folder, num_frames):
     print(f"All Videos extracted successfully. Total videos extracted: {num_videos} and it's stored at: {output_folder}")
 
 # Variables Declaration
-folder_path = "./datasets/train/0/"
-output_folder = "./datasets/train_frames1/"
-num_frames = 5
+folder_path = "./datasets/train/1/"
+output_folder = "./datasets/train_frames/1"
+num_frames = 30
 
 extract_frames_from_folder(folder_path, output_folder, num_frames)

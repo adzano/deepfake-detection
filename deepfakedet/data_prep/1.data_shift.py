@@ -5,7 +5,7 @@ from os import rename, listdir, rename, makedirs
 from shutil import copyfile
 
 source_folder_1 = './datasets/original_sequences/youtube/c23/videos'
-source_folder_2 = './datasets/manipulated_sequences/NeuralTextures/c23/videos'
+source_folder_2 = './datasets/manipulated_sequences/Deepfakes/c23/videos'
 dest_folder_1 = './datasets/train/1'
 dest_folder_2 = './datasets/train/0'
 dest_folder_3 = './datasets/test/1'
