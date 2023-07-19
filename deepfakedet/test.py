@@ -275,11 +275,11 @@ def create_base_network(image_input_shape, embedding_size):
 	x = Dense(128, activation='relu', kernel_initializer='he_uniform')(x)
 	x = Dropout(0.1)(x)
 	embeddings = Dense(embedding_size)(x)
-	class_labels = Input(shape=(1,), name='class_labels')
-	class_embeddings = Embedding(num_classes, embedding_size, embeddings_initializer='glorot_uniform')(class_labels)
-	class_embeddings = Flatten()(class_embeddings)
-	combined = concatenate([class_embeddings, embeddings])
-	base_network = Model(inputs=[main_input, class_labels], outputs=combined)
+	# class_labels = Input(shape=(1,), name='class_labels')
+	# class_embeddings = Embedding(num_classes, embedding_size, embeddings_initializer='glorot_uniform')(class_labels)
+	# class_embeddings = Flatten()(class_embeddings)
+	# combined = concatenate([class_embeddings, embeddings])
+	base_network = Model(inputs= main_input, outputs=embeddings)
 
 	return base_network
 
@@ -323,10 +323,12 @@ if __name__ == "__main__":
 	y_val = y_test[:2000]
 	x_test = x_test[2000:, :]
 	y_test = y_test[2000:]
-	
+	y_train_reshaped = np.reshape(y_train, (-1, 1))
+	y_val_reshaped = np.reshape(y_val, (-1, 1))
+
 	# Network training...
 	if train_flag == "True":
-		num_classes = np.max(train_label) + 1
+		# num_classes = np.max(train_label) + 1
 		base_network = create_base_network(input_image_shape, embedding_size)
 		for layer in base_network.layers:
 			if layer.name.endswith('bn'):
@@ -338,11 +340,12 @@ if __name__ == "__main__":
 		# input_labels = Input(shape=(1,), name='input_label')     input layer for labels
 		input_labels = Input(shape=(1,), name='input_label')
 		
-		embeddings = base_network([input_images, input_labels])               # output of network -> embeddings
+		embeddings = base_network([input_images])               # output of network -> embeddings
+		labels_plus_embeddings = concatenate([input_labels, embeddings])
 
 		# Defining a model with inputs (images, labels) and outputs (labels_plus_embeddings)
 		model = Model(inputs=[input_images, input_labels],
-					  outputs=embeddings)
+					  outputs=labels_plus_embeddings)
 		# model.summary()
 		plot_model(model, to_file='model.png', show_shapes=True, show_layer_names=True)
 
