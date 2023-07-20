@@ -297,7 +297,7 @@ if __name__ == "__main__":
 	epochs = args.epochs
 	# train_flag = args["train_flag"]  # either     True or False
 	train_flag = args.train_flag
-	# print(train_flag)
+	print(f"Train set to: {train_flag}")
 
 	embedding_size = 64
 
@@ -314,17 +314,32 @@ if __name__ == "__main__":
 	x_train, x_test, y_train, y_test = train_test_split(train_data, train_label, 
 												  test_size=0.1, stratify=train_label,
 												  random_state=34)
+	
+	# y_train_reshaped = np.reshape(y_train, (-1, 1))
+	# y_val_reshaped = np.reshape(y_val, (-1, 1))
+	# Reshape y_train and y_val
+	# y_train_reshaped = np.reshape(y_train, (-1, 1))
+	# y_val_reshaped = np.reshape(y_val, (-1, 1))
+	x_train = np.squeeze(x_train)
+	x_test = np.squeeze(x_test)
+
 	print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
 
-	# Reshape y_train and y_val
 	input_image_shape = (512, )
 
 	x_val = x_test[:2000, :]
 	y_val = y_test[:2000]
 	x_test = x_test[2000:, :]
 	y_test = y_test[2000:]
-	y_train_reshaped = np.reshape(y_train, (-1, 1))
-	y_val_reshaped = np.reshape(y_val, (-1, 1))
+
+	# Reshape y_train and y_val
+	# y_train_reshaped = np.reshape(y_train, (-1, 1))
+	# y_val_reshaped = np.reshape(y_val, (-1, 1))
+	# x_train = np.squeeze(x_train)
+	# x_test = np.squeeze(x_test)
+
+	# y_train = np.squeeze(y_train)
+	# y_val = np.squeeze(y_val)
 
 	# Network training...
 	if train_flag == "True":
@@ -372,7 +387,8 @@ if __name__ == "__main__":
 	else:
 		model_tr = load_model("triplets_semi_hard.hdf5",
 			custom_objects={'triplet_loss_adapted_from_tf':triplet_loss_adapted_from_tf})
-		print("model loaded")
+		print("-------------------------------------")
+		print("Model loaded")
 	
 		# Test the network
 		# creating an empty network

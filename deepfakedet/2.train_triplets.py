@@ -310,6 +310,9 @@ if __name__ == "__main__":
 	x_train, x_test, y_train, y_test = train_test_split(train_data, train_label, 
 												  test_size=0.1, stratify=train_label,
 												  random_state=34)
+	
+	y_train = np.squeeze(y_train)
+	y_test = np.squeeze(y_test)
 	print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
 
 	# Reshape y_train and y_val
