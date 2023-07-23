@@ -389,13 +389,14 @@ if __name__ == "__main__":
 			custom_objects={'triplet_loss_adapted_from_tf':triplet_loss_adapted_from_tf})
 		print("-------------------------------------")
 		print("Model loaded")
+		print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
 	
 		# Test the network
 		# creating an empty network
 		testing_embeddings = create_base_network(input_image_shape,
 												 embedding_size=embedding_size)
 		x_train_before = testing_embeddings.predict(x_train)
-		x_test_before = testing_embeddings.predict(x_test)
+		x_test_before = testing_embeddings.predict(x_test[:, np.newaxis])
 		x_embeddings_before_train = testing_embeddings.predict(x_test_before)
 
 		print("Embeddings before training")
