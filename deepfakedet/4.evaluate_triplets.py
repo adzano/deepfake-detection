@@ -56,7 +56,11 @@ def ignore_warnings(*args, **kwargs):
 imageio.core.util._precision_warn = ignore_warnings
 
 # Create face detector
-mtcnn = MTCNN(margin=40, select_largest=False, post_process=False, device='cuda:0')
+mtcnn = MTCNN(margin=40, 
+	      select_largest=False, 
+		  post_process=False, 
+		#   device='cuda:0'
+		  )
 
 def pairwise_distance(feature, squared=False):
 	"""Computes the pairwise distance matrix with numerical stability.
