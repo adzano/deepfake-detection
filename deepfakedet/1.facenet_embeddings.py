@@ -32,8 +32,8 @@ for (img_path, label) in zip(images, labels):
 train_data = np.array(train_data)
 train_label = np.array(train_label)
 
-np.save("train_data_facenet_embeddings.npy", train_data)
-np.save("train_label_facenet_embeddings.npy", train_label)
+np.save("train_data_facenet_embeddings_0axis.npy", train_data)
+np.save("train_label_facenet_embeddings_0axis.npy", train_label)
 print("All data successfully embedded!")
 print("Files saved...")
 

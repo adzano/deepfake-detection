@@ -274,8 +274,12 @@ def create_base_network(image_input_shape, embedding_size):
 	x = Dropout(0.1)(x)
 	x = Dense(128, activation='relu', kernel_initializer='he_uniform')(x)
 	x = Dropout(0.1)(x)
-	y = Dense(embedding_size)(x)
-	base_network = Model(main_input, y)
+	embeddings = Dense(embedding_size)(x)
+	# class_labels = Input(shape=(1,), name='class_labels')
+	# class_embeddings = Embedding(num_classes, embedding_size, embeddings_initializer='glorot_uniform')(class_labels)
+	# class_embeddings = Flatten()(class_embeddings)
+	# combined = concatenate([class_embeddings, embeddings])
+	base_network = Model(inputs= main_input, outputs=embeddings)
 
 	return base_network
 
@@ -293,7 +297,7 @@ if __name__ == "__main__":
 	epochs = args.epochs
 	# train_flag = args["train_flag"]  # either     True or False
 	train_flag = args.train_flag
-	# print(train_flag)
+	print(f"Train set to: {train_flag}")
 
 	embedding_size = 64
 
@@ -302,8 +306,8 @@ if __name__ == "__main__":
 	step = 10
 
 	# The data, split between train and test sets
-	train_data = np.load("train_data_facenet_embeddings.npy")
-	train_label = np.load("train_label_facenet_embeddings.npy")
+	train_data = np.load("train_data_facenet_embeddings_0axis.npy")
+	train_label = np.load("train_label_facenet_embeddings_0axis.npy")
 	# train_label = train_label.argmax(1)
 	print("Dataset Loaded...")
 
@@ -311,20 +315,44 @@ if __name__ == "__main__":
 												  test_size=0.1, stratify=train_label,
 												  random_state=34)
 	
-	y_train = np.squeeze(y_train)
-	y_test = np.squeeze(y_test)
+	# y_train_reshaped = np.reshape(y_train, (-1, 1))
+	# y_val_reshaped = np.reshape(y_val, (-1, 1))
+	# Reshape y_train and y_val
+	# y_train_reshaped = np.reshape(y_train, (-1, 1))
+	# y_val_reshaped = np.reshape(y_val, (-1, 1))
+	x_train = np.squeeze(x_train)
+	x_test = np.squeeze(x_test)
+
 	print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
 
-	# Reshape y_train and y_val
 	input_image_shape = (512, )
 
-	x_val = x_test[:2000, :]
-	y_val = y_test[:2000]
-	x_test = x_test[2000:, :]
-	y_test = y_test[2000:]
-	
+	x_val = x_test[:250, :]
+	y_val = y_test[:250]
+	x_test = x_test[250:, :]
+	y_test = y_test[250:]
+	# x_test = x_test[2000:, :]
+	# y_test = y_test[2000:]
+	# x_val = x_test[:2000, :]
+	# y_val = y_test[:2000]
+
+	print("--------for validation---------")
+	print(x_val.shape, y_val.shape)
+	print("--------for testing---------")
+	print(x_test.shape, y_test.shape)
+
+	# Reshape y_train and y_val
+	# y_train_reshaped = np.reshape(y_train, (-1, 1))
+	# y_val_reshaped = np.reshape(y_val, (-1, 1))
+	# x_train = np.squeeze(x_train)
+	# x_test = np.squeeze(x_test)
+
+	# y_train = np.squeeze(y_train)
+	# y_val = np.squeeze(y_val)
+
 	# Network training...
 	if train_flag == "True":
+		# num_classes = np.max(train_label) + 1
 		base_network = create_base_network(input_image_shape, embedding_size)
 		for layer in base_network.layers:
 			if layer.name.endswith('bn'):
@@ -336,12 +364,8 @@ if __name__ == "__main__":
 		# input_labels = Input(shape=(1,), name='input_label')     input layer for labels
 		input_labels = Input(shape=(1,), name='input_label')
 		
-		num_classes = np.max(train_label) + 1
-		class_embeddings = Embedding(num_classes, embedding_size, embeddings_initializer='glorot_uniform')(input_labels)
-		class_embeddings = Flatten()(class_embeddings)
-
 		embeddings = base_network([input_images])               # output of network -> embeddings
-		labels_plus_embeddings = concatenate([class_embeddings, embeddings])  # concatenating the labels + embeddings
+		labels_plus_embeddings = concatenate([input_labels, embeddings])
 
 		# Defining a model with inputs (images, labels) and outputs (labels_plus_embeddings)
 		model = Model(inputs=[input_images, input_labels],
@@ -372,7 +396,9 @@ if __name__ == "__main__":
 	else:
 		model_tr = load_model("triplets_semi_hard.hdf5",
 			custom_objects={'triplet_loss_adapted_from_tf':triplet_loss_adapted_from_tf})
-		print("model loaded")
+		print("-------------------------------------")
+		print("Model loaded")
+		print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
 	
 		# Test the network
 		# creating an empty network
@@ -380,7 +406,6 @@ if __name__ == "__main__":
 												 embedding_size=embedding_size)
 		x_train_before = testing_embeddings.predict(x_train)
 		x_test_before = testing_embeddings.predict(x_test)
-		x_embeddings_before_train = testing_embeddings.predict(x_test_before)
 
 		print("Embeddings before training")
 		sgd = linear_model.SGDClassifier(max_iter=50, tol=None)
@@ -442,7 +467,7 @@ if __name__ == "__main__":
 		print("DT Acc:", acc_dt)
 
 
-		embed = "TSNE"
+		embed = "TSNE" #for showing data distributing differences before and after training
 
 		if embed=="TSNE":
 			tsne = TSNE()
@@ -465,7 +490,7 @@ if __name__ == "__main__":
 			print(decomposed_embeddings.shape)
 			print(decomposed_embeddings[y_test == 1].shape)
 			# x_test_reshaped = np.reshape(x_test, (len(x_test), 28 * 28))
-			decomposed_gray = pca.fit_transform(x_embeddings_before_train)
+			decomposed_gray = pca.fit_transform(x_train_before)
 			
 			fig = plt.figure(figsize=(16, 8))
 			for label in test_class_labels:

@@ -306,8 +306,8 @@ if __name__ == "__main__":
 	step = 10
 
 	# The data, split between train and test sets
-	train_data = np.load("train_data_facenet_embeddings.npy")
-	train_label = np.load("train_label_facenet_embeddings.npy")
+	train_data = np.load("train_data_facenet_embeddings_0axis.npy")
+	train_label = np.load("train_label_facenet_embeddings_0axis.npy")
 	# train_label = train_label.argmax(1)
 	print("Dataset Loaded...")
 
@@ -327,10 +327,19 @@ if __name__ == "__main__":
 
 	input_image_shape = (512, )
 
-	x_val = x_test[:2000, :]
-	y_val = y_test[:2000]
-	x_test = x_test[2000:, :]
-	y_test = y_test[2000:]
+	x_val = x_test[:250, :]
+	y_val = y_test[:250]
+	x_test = x_test[250:, :]
+	y_test = y_test[250:]
+	# x_test = x_test[2000:, :]
+	# y_test = y_test[2000:]
+	# x_val = x_test[:2000, :]
+	# y_val = y_test[:2000]
+
+	print("--------for validation---------")
+	print(x_val.shape, y_val.shape)
+	print("--------for testing---------")
+	print(x_test.shape, y_test.shape)
 
 	# Reshape y_train and y_val
 	# y_train_reshaped = np.reshape(y_train, (-1, 1))
@@ -396,8 +405,7 @@ if __name__ == "__main__":
 		testing_embeddings = create_base_network(input_image_shape,
 												 embedding_size=embedding_size)
 		x_train_before = testing_embeddings.predict(x_train)
-		x_test_before = testing_embeddings.predict(x_test[:, np.newaxis])
-		x_embeddings_before_train = testing_embeddings.predict(x_test_before)
+		x_test_before = testing_embeddings.predict(x_test)
 
 		print("Embeddings before training")
 		sgd = linear_model.SGDClassifier(max_iter=50, tol=None)
@@ -482,7 +490,7 @@ if __name__ == "__main__":
 			print(decomposed_embeddings.shape)
 			print(decomposed_embeddings[y_test == 1].shape)
 			# x_test_reshaped = np.reshape(x_test, (len(x_test), 28 * 28))
-			decomposed_gray = pca.fit_transform(x_embeddings_before_train)
+			decomposed_gray = pca.fit_transform(x_train_before)
 			
 			fig = plt.figure(figsize=(16, 8))
 			for label in test_class_labels:

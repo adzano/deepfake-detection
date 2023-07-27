@@ -152,4 +152,5 @@ cython_debug/
 #.idea/
 
 # Training purposes
-datasets
+datasets/
+.npy
