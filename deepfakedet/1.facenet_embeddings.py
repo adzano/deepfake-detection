@@ -1,5 +1,4 @@
 import numpy as np
-# from keras.preprocessing import image
 import keras.utils as imageutils
 import pandas as pd
 from keras_facenet import FaceNet

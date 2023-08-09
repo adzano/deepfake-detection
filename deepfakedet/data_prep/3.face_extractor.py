@@ -25,15 +25,15 @@ mtcnn = MTCNN(
     margin=40,
     select_largest=False,
     post_process=False,
-    device="cuda:0"
+    # device="cuda:0"
 )
 # mtcnn = MTCNN(margin=40, select_largest=False, post_process=False,
 # device='cuda:0', image_size=256)
 
 # Directory containing images respective to each video
-source_frames_folders = ["./datasets/train_frames/1"]
+source_frames_folders = ["./datasets/train_frames/0"]
 # Destination location where faces cropped out from images will be saved
-dest_faces_folder = "./datasets/train_face/1/"
+dest_faces_folder = "./datasets/train_face/0/"
 
 print(f"Begin face extraction from {source_frames_folders}...")
 num_videos = 0

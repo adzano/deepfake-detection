@@ -11,11 +11,14 @@ dest_folder_2 = './datasets/train/0'
 dest_folder_3 = './datasets/test/1'
 dest_folder_4 = './datasets/test/0'
 
+train = 300 # Amount of videos to train
+test = 100 # Amount of videos to test
+sumtest = train + test
 
-for i, j in zip(listdir(source_folder_1)[:100], listdir(source_folder_2)[:100]):
+for i, j in zip(listdir(source_folder_1)[:train], listdir(source_folder_2)[:train]):
     copyfile(join(source_folder_1, i), join(dest_folder_1, i))
     copyfile(join(source_folder_2, j), join(dest_folder_2, j))
 
-for i, j in zip(listdir(source_folder_1)[100:200], listdir(source_folder_2)[100:200]):
+for i, j in zip(listdir(source_folder_1)[train:sumtest], listdir(source_folder_2)[train:sumtest]):
     copyfile(join(source_folder_1, i), join(dest_folder_3, i))
     copyfile(join(source_folder_2, j), join(dest_folder_4, j))

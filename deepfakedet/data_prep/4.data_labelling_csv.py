@@ -43,5 +43,5 @@ data = {
 	}
 
 df = pd.DataFrame(data)
-df.to_csv("train_faces_25frames.csv", index=False)
+df.to_csv("train_faces_30frames.csv", index=False)
 print(f"All data successfully saved to .CSV with a total of {counter} files.")
