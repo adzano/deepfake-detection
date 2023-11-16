@@ -6,13 +6,13 @@ from shutil import copyfile
 
 source_folder_1 = './datasets/original_sequences/youtube/c23/videos'
 source_folder_2 = './datasets/manipulated_sequences/Deepfakes/c23/videos'
-dest_folder_1 = './datasets/train/1'
-dest_folder_2 = './datasets/train/0'
+dest_folder_1 = './datasets/train1/1'
+dest_folder_2 = './datasets/train1/0'
 dest_folder_3 = './datasets/test/1'
 dest_folder_4 = './datasets/test/0'
 
-train = 300 # Amount of videos to train
-test = 100 # Amount of videos to test
+train = 500 # Jumlah Video Untuk Training dalam Setiap Subset
+test = 100 # Jumlah Video Untuk Testing
 sumtest = train + test
 
 for i, j in zip(listdir(source_folder_1)[:train], listdir(source_folder_2)[:train]):

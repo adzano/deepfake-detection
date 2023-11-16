@@ -49,8 +49,8 @@ def extract_frames_from_folder(folder_path, output_folder, num_frames):
     print(f"All Videos extracted successfully. Total videos extracted: {num_videos} and it's stored at: {output_folder}")
 
 # Variables Declaration
-folder_path = "./datasets/train/0/"
-output_folder = "./datasets/train_frames/0"
+folder_path = "./datasets/train1/1/"
+output_folder = "./datasets/train_frames1/1"
 num_frames = 30
 
 extract_frames_from_folder(folder_path, output_folder, num_frames)

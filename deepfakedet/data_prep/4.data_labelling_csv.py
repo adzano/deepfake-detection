@@ -6,7 +6,7 @@ from os import rename, listdir,  rename, makedirs
 from random import shuffle
 
 abs_path = os.path.abspath(os.getcwd())
-train_path = [os.path.normpath("./datasets/train_face/0"), os.path.normpath("./datasets/train_face/1")]
+train_path = [os.path.normpath("./datasets/train_face1/0"), os.path.normpath("./datasets/train_face1/1")]
 
 list_1 = [join(train_path[0], x) for x in listdir(train_path[0])]
 list_0 = [join(train_path[1], x) for x in listdir(train_path[1])]
@@ -43,5 +43,5 @@ data = {
 	}
 
 df = pd.DataFrame(data)
-df.to_csv("train_faces_30frames.csv", index=False)
+df.to_csv("train_faces_30frames1.csv", index=False)
 print(f"All data successfully saved to .CSV with a total of {counter} files.")
